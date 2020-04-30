@@ -1,0 +1,13 @@
+type Query {
+  _version: String
+}
+type Mutation {
+  _empty: String
+}
+
+type Tag {
+  id: Int!
+  name: String!
+  commentId: Int!
+  comment: Comment!
+}
