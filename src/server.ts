@@ -5,6 +5,8 @@ import { createServer } from 'http';
 import cors from 'cors';
 import schema from './schema';
 
+import { updateTodaysInfos } from './routes/tournament';
+
 const app = express();
 const server = new ApolloServer({
   schema,
@@ -14,9 +16,11 @@ const server = new ApolloServer({
 app.use('*', cors());
 server.applyMiddleware({ app, path: '/graphql' });
 
+app.get('/update', updateTodaysInfos);
+
 const httpServer = createServer(app);
-httpServer.listen({ port: 3000 }, (): void =>
+httpServer.listen({ port: 4000 }, (): void =>
   console.log(
-    `\n🚀      GraphQL is now running on http://localhost:3000/graphql`,
+    `\n🚀      GraphQL is now running on http://localhost:4000/graphql`,
   ),
 );

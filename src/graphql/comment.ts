@@ -15,6 +15,13 @@ export const typeDef = gql`
     tags: [CreateTagInput]
   }
 
+  type Tag {
+    id: Int!
+    name: String!
+    commentId: Int!
+    comment: Comment!
+  }
+
   type Comment {
     id: Int!
     author: String
