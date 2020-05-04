@@ -34,7 +34,7 @@ const craeteTournament = async (now: Date) => {
           marketStat: JSON.stringify(defaultMarketStat),
         },
       });
-      console.log('update done');
+      console.log('Update done');
     }
   } catch (error) {
     console.log(error);

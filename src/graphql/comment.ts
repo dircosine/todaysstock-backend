@@ -15,25 +15,14 @@ export const typeDef = gql`
     tags: [CreateTagInput]
   }
 
-  type Tag {
-    id: Int!
-    name: String!
-    commentId: Int!
-    comment: Comment!
-  }
-
   type Comment {
     id: Int!
-    author: String
+    user: User
     message: String!
+    tags: [String]
     createdAt: String!
-    tournamentId: Int!
     tournament: Tournament!
-    tags: [Tag]
-  }
-
-  extend type Query {
-    comments(tournamentId: Int): [Comment]
+    userId: Int
   }
 
   extend type Mutation {
@@ -43,15 +32,8 @@ export const typeDef = gql`
 
 export const resolers: IResolvers = {
   Comment: {
-    tags({ id }) {
-      return prisma.tag.findMany({ where: { commentId: id } });
-    },
-  },
-  Query: {
-    comments(_: any, args) {
-      const { tournamentId } = args;
-
-      return prisma.comment.findMany({ where: { tournamentId } });
+    user({ userId }) {
+      return prisma.user.findOne({ where: { id: userId } });
     },
   },
   Mutation: {

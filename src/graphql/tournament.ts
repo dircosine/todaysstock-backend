@@ -6,9 +6,11 @@ const prisma = new PrismaClient();
 
 export const typeDef = gql`
   type Tournament {
-    id: Int
-    eventDate: String
-    stockInfo: String
+    eventDate: String!
+    stockInfo: String!
+    marketStat: String
+    scores: String
+    comments: [Comment]
   }
 
   extend type Query {
@@ -17,11 +19,7 @@ export const typeDef = gql`
   }
   extend type Mutation {
     createTournament(eventDate: String!): Boolean!
-    postTournamentResult(
-      tournamentId: Int!
-      rank: [String!]!
-      market: String!
-    ): Boolean!
+    postTournamentResult(eventDate: String!, rank: [String!]!, market: String!): Boolean!
   }
 `;
 
@@ -33,13 +31,9 @@ const getTargetEventDate = (now: Date): string => {
 };
 
 const scoreMap: number[] = [10, 8, 5, 5, 2, 2, 2, 2];
-const updateStat = async (
-  tournamentId: number,
-  rank: string[],
-  marketString: string,
-) => {
+const updateStat = async (eventDate: string, rank: string[], marketString: string) => {
   const tournament: Tournament | null = await prisma.tournament.findOne({
-    where: { id: tournamentId },
+    where: { eventDate },
   });
   if (!tournament) {
     return;
@@ -54,18 +48,26 @@ const updateStat = async (
   const marketStat = JSON.parse(tournament.marketStat);
   const market = JSON.parse(marketString);
   Object.keys(market).map((key) => {
-    console.log(key);
     marketStat[key][market[key]] = marketStat[key][market[key]] + 1;
   });
 
   // db update
   await prisma.tournament.update({
-    where: { id: tournamentId },
-    data: { scores, marketStat, turnCount: tournament?.turnCount || 0 + 1 },
+    where: { eventDate },
+    data: {
+      scores: JSON.stringify(scores),
+      marketStat: JSON.stringify(marketStat),
+      turnCount: tournament.turnCount + 1,
+    },
   });
 };
 
 export const resolers: IResolvers = {
+  Tournament: {
+    comments({ id }) {
+      return prisma.comment.findMany({ where: { tournamentId: id } });
+    },
+  },
   Query: {
     todaysInfo(_: any) {
       const eventDate = getTargetEventDate(new Date());
@@ -82,20 +84,19 @@ export const resolers: IResolvers = {
   },
   Mutation: {
     async postTournamentResult(_: any, args) {
-      const { tournamentId, rank, market: marketString } = args;
+      const { eventDate, rank, market: marketString } = args;
 
-      console.log(rank);
       // *** tournamentResult row 생성
       await prisma.tournamentResult.create({
         data: {
-          tournament: { connect: { id: tournamentId } },
+          tournament: { connect: { eventDate } },
           rank: { set: rank },
           market: marketString,
         },
       });
 
       // *** 결과를 통계에 반영
-      updateStat(tournamentId, rank, marketString);
+      updateStat(eventDate, rank, marketString);
 
       return true;
     },

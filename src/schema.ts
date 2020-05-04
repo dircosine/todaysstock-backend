@@ -1,8 +1,9 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { GraphQLSchema } from 'graphql';
 
-import * as comment from './graphql/comment';
 import * as tournament from './graphql/tournament';
+import * as comment from './graphql/comment';
+import * as user from './graphql/user';
 import { gql } from 'apollo-server-express';
 
 const defaultType = gql`
@@ -16,8 +17,8 @@ const defaultType = gql`
 `;
 
 const schema: GraphQLSchema = makeExecutableSchema({
-  typeDefs: [defaultType, comment.typeDef, tournament.typeDef],
-  resolvers: [comment.resolers, tournament.resolers],
+  typeDefs: [defaultType, comment.typeDef, tournament.typeDef, user.typeDef],
+  resolvers: [comment.resolers, tournament.resolers, user.resolers],
 });
 
 export default schema;

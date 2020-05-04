@@ -20,21 +20,16 @@ CREATE TABLE "public"."User" (
 CREATE TABLE "public"."Comment" (
   id SERIAL PRIMARY KEY NOT NULL,
   message TEXT NOT NULL,
+  tags VARCHAR(50)[],
   "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
   "tournamentId" INTEGER NOT NULL,
   "userId" INTEGER,
   FOREIGN KEY ("tournamentId") REFERENCES "public"."Tournament"(id),
   FOREIGN KEY ("userId") REFERENCES "public"."User"(id)
 );
-CREATE TABLE "public"."Tag" (
-  id SERIAL PRIMARY KEY NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  "commentId" INTEGER NOT NULL,
-  FOREIGN KEY ("commentId") REFERENCES "public"."Comment"(id)
-);
 CREATE TABLE "public"."TournamentResult" (
   id SERIAL PRIMARY KEY NOT NULL,
-  "rank" VARCHAR(255)[] NOT NULL,
+  "rank" VARCHAR(50)[] NOT NULL,
   "market" TEXT NOT NULL,
   "tournamentId" INTEGER NOT NULL,
   "userId" INTEGER,

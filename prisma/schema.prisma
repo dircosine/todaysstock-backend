@@ -11,18 +11,11 @@ model Comment {
   createdAt    DateTime   @default(now())
   id           Int        @default(autoincrement()) @id
   message      String
+  tags         String[]
   tournamentId Int
   userId       Int?
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
   user         User?      @relation(fields: [userId], references: [id])
-  tags         Tag[]
-}
-
-model Tag {
-  commentId Int
-  id        Int     @default(autoincrement()) @id
-  name      String
-  comment   Comment @relation(fields: [commentId], references: [id])
 }
 
 model Tournament {
