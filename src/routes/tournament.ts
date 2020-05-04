@@ -7,8 +7,6 @@ const craeteTournament = async (now: Date) => {
   const prisma = new PrismaClient();
   const eventDate = formatEventDate(now);
 
-  console.log('Log for deploy test'); // TODO: 삭제
-
   try {
     const exists = await prisma.tournament.findOne({ where: { eventDate } });
     if (!exists) {
@@ -27,6 +25,6 @@ const craeteTournament = async (now: Date) => {
 };
 
 export const updateTodaysInfos = (req: Request, res: Response) => {
-  craeteTournament(new Date());
+  setTimeout(() => craeteTournament(new Date()), 10000);
   res.send('Start Updating todaysInfo');
 };
