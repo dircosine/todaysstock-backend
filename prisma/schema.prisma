@@ -7,26 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tournament {
-  eventDate String    @unique
-  id        Int       @default(autoincrement()) @id
-  stockInfo String
-  comments  Comment[]
-}
-
 model Comment {
-  author       String?
   createdAt    DateTime   @default(now())
   id           Int        @default(autoincrement()) @id
   message      String
   tournamentId Int
+  userId       Int?
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  user         User?      @relation(fields: [userId], references: [id])
   tags         Tag[]
 }
 
 model Tag {
+  commentId Int
   id        Int     @default(autoincrement()) @id
   name      String
-  commentId Int
   comment   Comment @relation(fields: [commentId], references: [id])
+}
+
+model Tournament {
+  eventDate         String             @unique
+  id                Int                @default(autoincrement()) @id
+  marketStat        String
+  scores            String
+  stockInfo         String
+  turnCount         Int
+  comments          Comment[]
+  tournamentResults TournamentResult[]
+}
+
+model TournamentResult {
+  id           Int        @default(autoincrement()) @id
+  market       String
+  rank         String[]
+  tournamentId Int
+  userId       Int?
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
+  user         User?      @relation(fields: [userId], references: [id])
+}
+
+model User {
+  email             String
+  id                Int                @default(autoincrement()) @id
+  name              String?
+  comments          Comment[]
+  tournamentResults TournamentResult[]
 }
