@@ -15,8 +15,8 @@ export const typeDef = gql`
   }
 
   extend type Query {
-    todaysInfo: Tournament
-    stockInfo(eventDate: String!): Tournament
+    getTodaysTournament: Tournament
+    getTournament(eventDate: String!): Tournament
   }
   extend type Mutation {
     createTournament(eventDate: String!): Boolean!
@@ -63,6 +63,20 @@ const updateStat = async (eventDate: string, rank: string[], marketString: strin
   });
 };
 
+const getTournament = async (eventDate: string) => {
+  const touranment = await prisma.tournament.findOne({
+    where: { eventDate },
+  });
+  if (!touranment) return null;
+  if (touranment.turnCount < 13) {
+    // *** 참여 결과 13개 이하면 통계 제공 안 함
+    const { scores, marketStat, ...sub } = touranment;
+    return sub;
+  } else {
+    return touranment;
+  }
+};
+
 export const resolers: IResolvers = {
   Tournament: {
     comments({ id }) {
@@ -70,17 +84,13 @@ export const resolers: IResolvers = {
     },
   },
   Query: {
-    todaysInfo(_: any) {
+    getTodaysTournament(_: any) {
       const eventDate = getTargetEventDate(new Date());
-      return prisma.tournament.findOne({
-        where: { eventDate },
-      });
+      return getTournament(eventDate);
     },
-    async stockInfo(_: any, args) {
+    getTournament(_: any, args) {
       const { eventDate } = args;
-      return prisma.tournament.findOne({
-        where: { eventDate },
-      });
+      return getTournament(eventDate);
     },
   },
   Mutation: {
