@@ -4,15 +4,11 @@ import { gql, IResolvers } from 'apollo-server-express';
 const prisma = new PrismaClient();
 
 export const typeDef = gql`
-  input CreateTagInput {
-    name: String!
-  }
-
   input CreateCommentInput {
-    author: String
+    eventDate: String!
+    userId: Int
     message: String!
-    tournamentId: Int!
-    tags: [CreateTagInput]
+    tags: [String]
   }
 
   type Comment {
@@ -26,29 +22,27 @@ export const typeDef = gql`
   }
 
   extend type Mutation {
-    createComment(input: CreateCommentInput): Boolean!
+    createComment(input: CreateCommentInput): Comment!
   }
 `;
 
 export const resolers: IResolvers = {
   Comment: {
     user({ userId }) {
-      return prisma.user.findOne({ where: { id: userId } });
+      return userId ? prisma.user.findOne({ where: { id: userId } }) : null;
     },
   },
   Mutation: {
-    async createComment(_: any, args) {
-      const { tournamentId, tags, ...input } = args.input;
-
-      await prisma.comment.create({
+    createComment(_: any, args) {
+      const { eventDate, tags, userId, message } = args.input;
+      return prisma.comment.create({
         data: {
-          tournament: { connect: { id: tournamentId } },
-          tags: { create: tags },
-          ...input,
+          user: userId ? { connect: { id: userId } } : null,
+          tags: { set: tags || [] },
+          message,
+          tournament: { connect: { eventDate } },
         },
       });
-
-      return true;
     },
   },
 };

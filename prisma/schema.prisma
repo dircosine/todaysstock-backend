@@ -19,8 +19,8 @@ model Comment {
 }
 
 model Tournament {
-  eventDate         String             @unique
   id                Int                @default(autoincrement()) @id
+  eventDate         String             @unique
   marketStat        String
   scores            String
   stockInfo         String

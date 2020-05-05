@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 export const typeDef = gql`
   type Tournament {
+    id: Int!
     eventDate: String!
     stockInfo: String!
     marketStat: String
