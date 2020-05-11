@@ -26,8 +26,8 @@ export const typeDef = gql`
 
 export const resolers: IResolvers = {
   Tournament: {
-    comments({ id }) {
-      return prisma.comment.findMany({ where: { tournamentId: id } });
+    comments({ tournamentId }) {
+      return prisma.comment.findMany({ where: { tournamentId } });
     },
   },
   Query: {

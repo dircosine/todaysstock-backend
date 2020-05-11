@@ -21,6 +21,9 @@ export const typeDef = gql`
     userId: Int
   }
 
+  extend type Query {
+    getAllComments: [Comment]
+  }
   extend type Mutation {
     createComment(input: CreateCommentInput): Comment!
   }
@@ -30,6 +33,14 @@ export const resolers: IResolvers = {
   Comment: {
     user({ userId }) {
       return userId ? prisma.user.findOne({ where: { id: userId } }) : null;
+    },
+    tournament({ tournamentId }) {
+      return prisma.tournament.findOne({ where: { id: tournamentId } });
+    },
+  },
+  Query: {
+    getAllComments() {
+      return prisma.comment.findMany();
     },
   },
   Mutation: {

@@ -35,6 +35,8 @@ const craeteTournament = async (now: Date) => {
         },
       });
       console.log('Update done');
+    } else {
+      console.log('Already exist');
     }
   } catch (error) {
     console.log(error);
