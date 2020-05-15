@@ -23,11 +23,20 @@ server.applyMiddleware({ app, path: '/graphql' });
 app.get('/', (req, res) => {
   res.send('호잇!');
 });
+// *** health check
+app.get('/health/ping', (req, res) => {
+  res.status(200).send({
+    code: '0000',
+    message: 'Pong! I AM Alive',
+    description: null,
+    data: null,
+  });
+});
+// *** 오늘의 토너먼트 종목 업데이트 트리거
 app.get('/update', updateTodaysInfos);
+app.get('/update/:eventdate', updateTodaysInfos);
 
 const httpServer = createServer(app);
 httpServer.listen({ port: PORT }, (): void =>
-  console.log(
-    `\n🚀      GraphQL is now running on http://localhost:${PORT}/graphql`,
-  ),
+  console.log(`\n🚀      GraphQL is now running on http://localhost:${PORT}/graphql`),
 );

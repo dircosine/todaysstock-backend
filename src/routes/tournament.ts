@@ -3,9 +3,8 @@ import { formatEventDate } from '../lib/utils';
 import { Response, Request } from 'express';
 import { PrismaClient } from '@prisma/client';
 
-const craeteTournament = async (now: Date) => {
+export const craeteTournament = async (eventDate: string) => {
   const prisma = new PrismaClient();
-  const eventDate = formatEventDate(now);
   // const eventDate = '20200503';
 
   try {
@@ -44,6 +43,11 @@ const craeteTournament = async (now: Date) => {
 };
 
 export const updateTodaysInfos = (req: Request, res: Response) => {
-  setTimeout(() => craeteTournament(new Date()), 10000);
-  res.send('Start Updating todaysInfo');
+  if (req.params.eventdate) {
+    craeteTournament(req.params.eventdate);
+  } else {
+    const eventDate = formatEventDate(new Date());
+    setTimeout(() => craeteTournament(eventDate), 10000);
+  }
+  res.send('Start Creating todaysInfo');
 };
