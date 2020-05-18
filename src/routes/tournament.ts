@@ -12,9 +12,7 @@ export const craeteTournament = async (eventDate: string) => {
       where: { eventDate },
     });
     if (!exists) {
-      const response = await Axios.get(
-        `https://res-todaysstock.s3.ap-northeast-2.amazonaws.com/${eventDate}_stock_infos.json`,
-      );
+      const response = await Axios.get(process.env.S3 + `${eventDate}/today/${eventDate}_stock_infos.json`);
       const defaultScores = {};
       response.data.map((info: any) => {
         Object.assign(defaultScores, { [info.name]: 0 });
