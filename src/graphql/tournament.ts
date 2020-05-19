@@ -20,7 +20,7 @@ export const typeDef = gql`
   }
   extend type Mutation {
     createTournament(eventDate: String!): Boolean!
-    postTournamentResult(eventDate: String!, rank: [String!]!, market: String!): Boolean!
+    postTournamentResult(eventDate: String!, rank: [String!]!, market: String!, userId: Int): Boolean!
   }
 `;
 
@@ -31,7 +31,7 @@ export const resolers: IResolvers = {
     },
   },
   Query: {
-    getTodaysTournament(_: any) {
+    getTodaysTournament() {
       const eventDate = getTargetEventDate(new Date());
       return getTournament(eventDate);
     },
@@ -42,12 +42,13 @@ export const resolers: IResolvers = {
   },
   Mutation: {
     async postTournamentResult(_: any, args) {
-      const { eventDate, rank, market: marketString } = args;
+      const { eventDate, rank, userId, market: marketString } = args;
 
       // *** tournamentResult row 생성
       await prisma.tournamentResult.create({
         data: {
           tournament: { connect: { eventDate } },
+          user: userId ? { connect: { id: userId } } : null,
           rank: { set: rank },
           market: marketString,
         },

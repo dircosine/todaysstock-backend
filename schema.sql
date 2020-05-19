@@ -1,8 +1,8 @@
-DROP TABLE "public"."Tournament" CASCADE;
-DROP TABLE "public"."Comment" CASCADE;
-DROP TABLE "public"."Tag" CASCADE;
-DROP TABLE "public"."User" CASCADE;
-DROP TABLE "public"."TournamentResult" CASCADE;
+-- DROP TABLE "public"."Tournament" CASCADE;
+-- DROP TABLE "public"."Comment" CASCADE;
+-- DROP TABLE "public"."Tag" CASCADE;
+-- DROP TABLE "public"."User" CASCADE;
+-- DROP TABLE "public"."TournamentResult" CASCADE;
 
 CREATE TABLE "public"."Tournament" (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE "public"."Tournament" (
 CREATE TABLE "public"."User" (
   id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(255),
-  email VARCHAR(255) NOT NULL
+  email VARCHAR(255) UNIQUE NOT NULL
 );
 CREATE TABLE "public"."Comment" (
   id SERIAL PRIMARY KEY NOT NULL,
