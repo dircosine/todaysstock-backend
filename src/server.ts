@@ -14,7 +14,7 @@ const app = express();
 const server = new ApolloServer({
   schema,
   validationRules: [depthLimit(7)],
-  playground: true,
+  playground: process.env.NODE_ENV === 'production' ? false : true,
 });
 
 app.use('*', cors());

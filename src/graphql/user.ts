@@ -13,7 +13,7 @@ export const typeDef = gql`
   }
 
   extend type Mutation {
-    createUser(email: String!, name: String): User!
+    createUser(email: String!, name: String, resultIds: [Int]): User!
   }
 `;
 
@@ -28,8 +28,11 @@ export const resolers: IResolvers = {
   },
   Mutation: {
     createUser(_: any, args) {
-      const { email, name } = args;
-      return prisma.user.create({ data: { email, name } });
+      const { email, name, resultIds } = args;
+      const connectInstArray = resultIds.map((resultId: number) => ({ id: resultId }));
+      return prisma.user.create({
+        data: { email, name, tournamentResults: resultIds ? { connect: connectInstArray } : null },
+      });
     },
   },
 };
