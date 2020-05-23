@@ -14,22 +14,34 @@ export const typeDef = gql`
     tournament: Tournament
     user: User
   }
-
+  extend type Query {
+    getTournamentResults(userEmail: String!): [TournamentResult]
+  }
   extend type Mutation {
-    postTournamentResult(eventDate: String!, rank: [String!]!, market: String!, userId: Int): Int!
+    postTournamentResult(eventDate: String!, rank: [String!]!, market: String!, userEmail: String): Int!
   }
 `;
 
 export const resolers: IResolvers = {
+  TournamentResult: {
+    tournament({ tournamentId }) {
+      return prisma.tournament.findOne({ where: { id: tournamentId } });
+    },
+  },
+  Query: {
+    getTournamentResults(_: any, { userEmail }) {
+      return prisma.tournamentResult.findMany({ where: { user: { email: userEmail } }, orderBy: { id: 'desc' } });
+    },
+  },
   Mutation: {
     async postTournamentResult(_: any, args) {
-      const { eventDate, rank, userId, market: marketString } = args;
+      const { eventDate, rank, market: marketString, userEmail } = args;
 
       // *** tournamentResult row 생성
       const tournamnetResult = await prisma.tournamentResult.create({
         data: {
           tournament: { connect: { eventDate } },
-          user: userId ? { connect: { id: userId } } : null,
+          user: userEmail ? { connect: { email: userEmail } } : null,
           rank: { set: rank },
           market: marketString,
         },

@@ -12,6 +12,10 @@ export const typeDef = gql`
     tournamentResults: [TournamentResult]
   }
 
+  extend type Query {
+    getUser(email: String!): User
+  }
+
   extend type Mutation {
     createUser(email: String!, name: String, resultIds: [Int]): User!
   }
@@ -24,6 +28,11 @@ export const resolers: IResolvers = {
     },
     tournamentResults({ id }) {
       return prisma.tournamentResult.findMany({ where: { userId: id } });
+    },
+  },
+  Query: {
+    getUser(_: any, { email }) {
+      return prisma.user.findOne({ where: { email } });
     },
   },
   Mutation: {
