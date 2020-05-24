@@ -30,7 +30,10 @@ export const resolers: IResolvers = {
   },
   Query: {
     getTournamentResults(_: any, { userEmail }) {
-      return prisma.tournamentResult.findMany({ where: { user: { email: userEmail } }, orderBy: { id: 'desc' } });
+      return prisma.tournamentResult.findMany({
+        where: { user: { email: userEmail } },
+        orderBy: { id: 'desc' },
+      });
     },
   },
   Mutation: {

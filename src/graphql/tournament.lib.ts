@@ -43,15 +43,15 @@ export const updateStat = async (eventDate: string, rank: string[], marketString
 };
 
 export const getTournament = async (eventDate: string) => {
-  const touranment = await prisma.tournament.findOne({
+  const tournament = await prisma.tournament.findOne({
     where: { eventDate },
   });
-  if (!touranment) return null;
-  if (touranment.turnCount < 13) {
+  if (!tournament) return null;
+  if (tournament.turnCount < 13) {
     // *** 참여 결과 13개 이하면 통계 제공 안 함
-    const { scores, marketStat, ...sub } = touranment;
+    const { scores, marketStat, ...sub } = tournament;
     return sub;
   } else {
-    return touranment;
+    return tournament;
   }
 };
