@@ -18,6 +18,7 @@ export const typeDef = gql`
 
   extend type Mutation {
     createUser(email: String!, name: String, resultIds: [Int]): User!
+    updateUser(email: String!, newEmail: String, name: String): User!
   }
 `;
 
@@ -42,6 +43,9 @@ export const resolers: IResolvers = {
       return prisma.user.create({
         data: { email, name, tournamentResults: resultIds ? { connect: connectInstArray } : null },
       });
+    },
+    updateUser(_: any, { email, newEmail, name }) {
+      return prisma.user.update({ where: { email }, data: { email: newEmail, name } });
     },
   },
 };
