@@ -3,13 +3,6 @@ import { formatEventDate } from '../lib/utils';
 
 const prisma = new PrismaClient();
 
-export const getTargetEventDate = (now: Date): string => {
-  if (now.getUTCHours() < 10) {
-    now.setDate(now.getDate() - 1);
-  }
-  return formatEventDate(now);
-};
-
 const scoreMap: number[] = [10, 8, 5, 5, 2, 2, 2, 2];
 export const updateStat = async (eventDate: string, rank: string[], marketString: string) => {
   const tournament: Tournament | null = await prisma.tournament.findOne({

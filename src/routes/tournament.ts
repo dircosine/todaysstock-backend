@@ -44,7 +44,9 @@ export const updateTodaysInfos = (req: Request, res: Response) => {
   if (req.params.eventdate) {
     craeteTournament(req.params.eventdate);
   } else {
-    const eventDate = formatEventDate(new Date());
+    const now = new Date();
+    now.setDate(now.getDate() + 1);
+    const eventDate = formatEventDate(now);
     setTimeout(() => craeteTournament(eventDate), 10000);
   }
   res.send('Start Creating todaysInfo');

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { gql, IResolvers } from 'apollo-server-express';
-import { getTargetEventDate, getTournament } from './tournament.lib';
+import { getTournament } from './tournament.lib';
+import { formatEventDate } from '../lib/utils';
 
 const prisma = new PrismaClient();
 
@@ -32,10 +33,10 @@ export const resolers: IResolvers = {
   },
   Query: {
     getEventDate() {
-      return getTargetEventDate(new Date());
+      return formatEventDate(new Date());
     },
     getTodaysTournament() {
-      const eventDate = getTargetEventDate(new Date());
+      const eventDate = formatEventDate(new Date());
       return getTournament(eventDate);
     },
     getTournament(_: any, args) {

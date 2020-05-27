@@ -4,3 +4,10 @@ export const formatEventDate = (d: Date): string => {
 
   return `${d.getFullYear()}${month}${date}`;
 };
+
+export const getTargetEventDate = (now: Date): string => {
+  if (now.getUTCHours() < 10) {
+    now.setDate(now.getDate() - 1);
+  }
+  return formatEventDate(now);
+};
