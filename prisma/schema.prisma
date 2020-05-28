@@ -42,6 +42,7 @@ model TournamentResult {
 model User {
   id                Int                @default(autoincrement()) @id
   email             String             @unique
+  noticeDate        String
   name              String?
   comments          Comment[]
   tournamentResults TournamentResult[]

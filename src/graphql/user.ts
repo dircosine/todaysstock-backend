@@ -17,8 +17,7 @@ export const typeDef = gql`
   }
 
   extend type Mutation {
-    createUser(email: String!, name: String, resultIds: [Int]): User!
-    updateUser(email: String!, newEmail: String, name: String): User!
+    putUser(email: String!, name: String, resultIds: [Int], noticeDate: String, newEmail: String): User!
   }
 `;
 
@@ -37,15 +36,14 @@ export const resolers: IResolvers = {
     },
   },
   Mutation: {
-    createUser(_: any, args) {
-      const { email, name, resultIds } = args;
-      const connectInstArray = resultIds.map((resultId: number) => ({ id: resultId }));
-      return prisma.user.create({
-        data: { email, name, tournamentResults: resultIds ? { connect: connectInstArray } : null },
+    putUser(_: any, args) {
+      const { email, name, resultIds, noticeDate, newEmail } = args;
+      const connectInstArray = resultIds?.map((resultId: number) => ({ id: resultId })) || [];
+      return prisma.user.upsert({
+        where: { email },
+        create: { email, name, tournamentResults: resultIds ? { connect: connectInstArray } : null, noticeDate },
+        update: { email: newEmail, name, noticeDate },
       });
-    },
-    updateUser(_: any, { email, newEmail, name }) {
-      return prisma.user.update({ where: { email }, data: { email: newEmail, name } });
     },
   },
 };

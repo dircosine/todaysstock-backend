@@ -37,4 +37,6 @@
 --   FOREIGN KEY ("userId") REFERENCES "public"."User"(id)
 -- );
 
--- ALTER TABLE "public"."TournamentResult" DROP COLUMN retry;
+
+-- ALTER TABLE "public"."User" DROP COLUMN "noticeDate";
+ALTER TABLE "public"."User" ADD COLUMN "noticeDate" VARCHAR(20);
