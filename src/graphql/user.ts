@@ -42,7 +42,12 @@ export const resolers: IResolvers = {
       return prisma.user.upsert({
         where: { email },
         create: { email, name, tournamentResults: resultIds ? { connect: connectInstArray } : null, noticeDate },
-        update: { email: newEmail, name, noticeDate },
+        update: {
+          email: newEmail,
+          name,
+          noticeDate,
+          tournamentResults: resultIds ? { connect: connectInstArray } : null,
+        },
       });
     },
   },
